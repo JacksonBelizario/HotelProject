@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -39,7 +40,8 @@ public class FuncionarioDao extends Dao implements AbstractDao<Funcionario> {
 
     @Override
     public List<Funcionario> getAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        TypedQuery<Funcionario> query = entityManager.createQuery("SELECT f FROM Funcionario f", Funcionario.class);
+        return query.getResultList();
     }
 
     @Override
