@@ -23,12 +23,12 @@ public class Main {
      */
     public static void main(String[] args) {
         
-        Funcionario funcionario = new Funcionario();
-        funcionario.setNome("Aline");
-        funcionario.setEndereco("Rua André Gomes Brandão");
-        
-        FuncionarioDao funcionarioDao = new FuncionarioDao();
-        funcionarioDao.save(funcionario);
+//        Funcionario funcionario = new Funcionario();
+//        funcionario.setNome("Aline");
+//        funcionario.setEndereco("Rua André Gomes Brandão");
+//        
+//        FuncionarioDao funcionarioDao = new FuncionarioDao();
+//        funcionarioDao.save(funcionario);
     }
     
 }
