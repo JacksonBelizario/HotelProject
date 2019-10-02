@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'application'
+
+
+mainClassName = 'HotelProject.Main'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'io.github.vincenzopalazzo:material-ui-swing:1.0.0'
+    
+    testCompile 'junit:junit:4.12'
+}
