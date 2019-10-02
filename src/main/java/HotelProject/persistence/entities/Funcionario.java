@@ -21,7 +21,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "funcionario")
-public class Funcionario implements Serializable {
+public class Funcionario implements AbstractEntity, Serializable {
     
     /**
      * 
@@ -32,7 +32,7 @@ public class Funcionario implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "codigo", unique=true, nullable = false)
-    private String userId;
+    private Integer id;
     
     @Column(name = "nome", nullable = false, length = 255)
     private String nome;
@@ -50,12 +50,8 @@ public class Funcionario implements Serializable {
     private String telefone;
 
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public Integer getId() {
+        return id;
     }
 
     public String getNome() {

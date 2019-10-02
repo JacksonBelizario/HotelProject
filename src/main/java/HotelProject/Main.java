@@ -5,6 +5,7 @@
  */
 package HotelProject;
 
+import HotelProject.persistence.dao.FuncionarioDao;
 import HotelProject.persistence.entities.Funcionario;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,27 +22,13 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        System.out.println("Creating entity information...");
-        EntityManagerFactory entitiManagerFactory = Persistence.createEntityManagerFactory("hotel");
-        EntityManager entityManager = entitiManagerFactory.createEntityManager();
-
-        EntityTransaction et = entityManager.getTransaction();
-        
-        et.begin();
         
         Funcionario funcionario = new Funcionario();
-        funcionario.setNome("Jackson");
+        funcionario.setNome("Aline");
         funcionario.setEndereco("Rua André Gomes Brandão");
- 
-        entityManager.persist(funcionario);
-
-        et.commit();
         
-        entityManager.close();
- 
-        entitiManagerFactory.close();
-
+        FuncionarioDao funcionarioDao = new FuncionarioDao();
+        funcionarioDao.save(funcionario);
     }
     
 }

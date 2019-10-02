@@ -6,35 +6,28 @@
 package HotelProject.persistence.dao;
 
 import java.util.List;
-import javax.persistence.EntityManager;
 
 /**
  *
  * @author Jackson
  * @param <T>
  */
-public interface AbstractDao<T> {
+interface AbstractDao<T> {
 
-    EntityManager getEntityManager();
+    void save(T entity);
 
-    void persist(T entity);
+    void delete(T entity);
 
-    void remove(T entity);
-
-    T merge(T entity);
-
-    T getReference(String id);
+    void update(T entity);
 
     T find(String id);
-
-    T find(String id, boolean refresh);
+    
+    List<T> getAll();
 
     List<T> getList(String qlString, Object[] params);
 
     List<T> getList(String qlString, Object[] params, int[] range);
 
     long getCount(String qlString, Object[] params);
-
-    int excuteUpdate(String qlString, Object[] params);
 
 }
