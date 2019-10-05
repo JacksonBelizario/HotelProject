@@ -219,15 +219,6 @@ public class CenterTabbedPane extends FlatTabbedPaneUI {
             // Pad the selected tab so that it appears raised in front
             padSelectedTab(tabPlacement, selectedIndex);
 
-            // if right to left and tab placement on the top or
-            // the bottom, flip x positions and adjust by widths
-            if (verticalTabRuns) {
-                int rightMargin = size.width - (insets.right + tabAreaInsets.right);
-                for (i = 0; i < tabCount; i++) {
-                    rects[i].x = rightMargin - rects[i].x - rects[i].width;
-                }
-            }
-
 
             switch (tabPlacement) {
                 case LEFT:

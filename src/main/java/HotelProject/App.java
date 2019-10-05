@@ -5,9 +5,9 @@
  */
 package HotelProject;
 
+import HotelProject.persistence.dao.FuncionarioDao;
+import HotelProject.persistence.entities.Funcionario;
 import HotelProject.ui.CenterTabbedPane;
-import mdlaf.*;
-import mdlaf.animation.*;
 import com.formdev.flatlaf.FlatLightLaf;
 
 /**
@@ -15,13 +15,15 @@ import com.formdev.flatlaf.FlatLightLaf;
  * @author Jackson
  */
 public class App extends javax.swing.JFrame {
+    
+    int mpX, mpY;
 
     /**
      * Creates new form NewMDIApplication
      */
     public App() {
         initComponents();
-//        tabs.setUI(new CenterTabbedPane());
+        tabs.setUI(new CenterTabbedPane());
     }
 
     /**
@@ -34,13 +36,24 @@ public class App extends javax.swing.JFrame {
     private void initComponents() {
 
         desktopPane = new javax.swing.JDesktopPane();
+        topBar = new javax.swing.JPanel();
+        closeLabel = new javax.swing.JLabel();
         tabs = new javax.swing.JTabbedPane();
         homePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         funcionariosPanel = new javax.swing.JPanel();
+        cadastroPanel = new javax.swing.JPanel();
+        btnVoltar = new javax.swing.JButton();
+        nomeInput = new javax.swing.JTextField();
+        enderecoInput = new javax.swing.JTextField();
+        cidadeInput = new javax.swing.JTextField();
+        estadoInput = new javax.swing.JTextField();
+        telefoneInput = new javax.swing.JTextField();
+        btnSave = new javax.swing.JButton();
+        listagemPanel = new javax.swing.JPanel();
+        btnNovoFuncionario = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        btnNovoFuncionario = new javax.swing.JButton();
         hopedesPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -49,13 +62,76 @@ public class App extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hotel Manager");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setLocation(new java.awt.Point(100, 100));
+        setUndecorated(true);
+        setResizable(false);
+        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                formMouseDragged(evt);
+            }
+        });
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                formMousePressed(evt);
+            }
+        });
 
+        desktopPane.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(71, 71, 71)));
         desktopPane.setLayout(new java.awt.BorderLayout());
+
+        topBar.setBackground(new java.awt.Color(76, 76, 76));
+        topBar.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                topBarMouseDragged(evt);
+            }
+        });
+        topBar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                topBarMousePressed(evt);
+            }
+        });
+
+        closeLabel.setForeground(new java.awt.Color(255, 255, 255));
+        closeLabel.setIcon(new javax.swing.ImageIcon("C:\\Users\\Jackson\\Desktop\\NetBeansProjects\\icons\\close-grey.png")); // NOI18N
+        closeLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                closeLabelMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout topBarLayout = new javax.swing.GroupLayout(topBar);
+        topBar.setLayout(topBarLayout);
+        topBarLayout.setHorizontalGroup(
+            topBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, topBarLayout.createSequentialGroup()
+                .addContainerGap(697, Short.MAX_VALUE)
+                .addComponent(closeLabel)
+                .addContainerGap())
+        );
+        topBarLayout.setVerticalGroup(
+            topBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topBarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(closeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        desktopPane.add(topBar, java.awt.BorderLayout.PAGE_START);
 
         tabs.setTabPlacement(javax.swing.JTabbedPane.LEFT);
         tabs.setAutoscrolls(true);
         tabs.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         tabs.setMinimumSize(new java.awt.Dimension(250, 30));
+        tabs.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                tabsMouseDragged(evt);
+            }
+        });
+        tabs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tabsMousePressed(evt);
+            }
+        });
 
         homePanel.setBackground(new java.awt.Color(255, 255, 255));
         homePanel.setAlignmentY(15.0F);
@@ -69,22 +145,118 @@ public class App extends javax.swing.JFrame {
         homePanel.setLayout(homePanelLayout);
         homePanelLayout.setHorizontalGroup(
             homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, homePanelLayout.createSequentialGroup()
-                .addContainerGap(160, Short.MAX_VALUE)
+            .addGroup(homePanelLayout.createSequentialGroup()
+                .addContainerGap(158, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(153, 153, 153))
         );
         homePanelLayout.setVerticalGroup(
             homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(homePanelLayout.createSequentialGroup()
-                .addGap(120, 120, 120)
+                .addGap(154, 154, 154)
                 .addComponent(jLabel1)
-                .addContainerGap(123, Short.MAX_VALUE))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
 
         tabs.addTab("Início", homePanel);
 
         funcionariosPanel.setBackground(new java.awt.Color(255, 255, 255));
+        funcionariosPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                funcionariosPanelComponentShown(evt);
+            }
+        });
+
+        cadastroPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        btnVoltar.setIcon(new javax.swing.ImageIcon("C:\\Users\\Jackson\\Desktop\\NetBeansProjects\\icons\\back.png")); // NOI18N
+        btnVoltar.setBorder(null);
+        btnVoltar.setBorderPainted(false);
+        btnVoltar.setIconTextGap(0);
+        btnVoltar.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnVoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVoltarActionPerformed(evt);
+            }
+        });
+
+        nomeInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Nome"));
+
+        enderecoInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Endereço"));
+
+        cidadeInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Cidade"));
+
+        estadoInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Estado"));
+
+        telefoneInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Telefone"));
+
+        btnSave.setIcon(new javax.swing.ImageIcon("C:\\Users\\Jackson\\Desktop\\NetBeansProjects\\icons\\save_50px.png")); // NOI18N
+        btnSave.setBorder(null);
+        btnSave.setBorderPainted(false);
+        btnSave.setIconTextGap(0);
+        btnSave.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout cadastroPanelLayout = new javax.swing.GroupLayout(cadastroPanel);
+        cadastroPanel.setLayout(cadastroPanelLayout);
+        cadastroPanelLayout.setHorizontalGroup(
+            cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cadastroPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(enderecoInput)
+                    .addGroup(cadastroPanelLayout.createSequentialGroup()
+                        .addComponent(cidadeInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(estadoInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(cadastroPanelLayout.createSequentialGroup()
+                        .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnVoltar)
+                            .addGroup(cadastroPanelLayout.createSequentialGroup()
+                                .addComponent(nomeInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(telefoneInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cadastroPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSave)))
+                .addContainerGap())
+        );
+        cadastroPanelLayout.setVerticalGroup(
+            cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(cadastroPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnVoltar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(nomeInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(telefoneInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(enderecoInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cidadeInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(estadoInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
+                .addComponent(btnSave)
+                .addContainerGap())
+        );
+
+        listagemPanel.setBackground(new java.awt.Color(255, 255, 255));
+        listagemPanel.setForeground(new java.awt.Color(255, 255, 255));
+
+        btnNovoFuncionario.setIcon(new javax.swing.ImageIcon("C:\\Users\\Jackson\\Desktop\\NetBeansProjects\\icons\\add-user.png")); // NOI18N
+        btnNovoFuncionario.setBorder(null);
+        btnNovoFuncionario.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnNovoFuncionario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoFuncionarioActionPerformed(evt);
+            }
+        });
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -99,29 +271,42 @@ public class App extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        btnNovoFuncionario.setText("NOVO");
+        javax.swing.GroupLayout listagemPanelLayout = new javax.swing.GroupLayout(listagemPanel);
+        listagemPanel.setLayout(listagemPanelLayout);
+        listagemPanelLayout.setHorizontalGroup(
+            listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(listagemPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listagemPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnNovoFuncionario)))
+                .addContainerGap())
+        );
+        listagemPanelLayout.setVerticalGroup(
+            listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listagemPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnNovoFuncionario)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout funcionariosPanelLayout = new javax.swing.GroupLayout(funcionariosPanel);
         funcionariosPanel.setLayout(funcionariosPanelLayout);
         funcionariosPanelLayout.setHorizontalGroup(
             funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(funcionariosPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, funcionariosPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnNovoFuncionario)))
-                .addContainerGap())
+            .addComponent(listagemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(cadastroPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         funcionariosPanelLayout.setVerticalGroup(
             funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, funcionariosPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnNovoFuncionario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+            .addComponent(listagemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(cadastroPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tabs.addTab("Funcionários", funcionariosPanel);
@@ -150,7 +335,7 @@ public class App extends javax.swing.JFrame {
             .addGroup(hopedesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(hopedesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, hopedesPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btnNovoHospede)))
@@ -161,9 +346,9 @@ public class App extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, hopedesPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnNovoHospede)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(16, 16, 16))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         tabs.addTab("Hóspedes", hopedesPanel);
@@ -178,11 +363,81 @@ public class App extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(desktopPane)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tabsMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabsMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tabsMousePressed
+
+    private void tabsMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabsMouseDragged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tabsMouseDragged
+
+    private void formMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formMousePressed
+
+    private void formMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseDragged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formMouseDragged
+
+    private void btnNovoFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoFuncionarioActionPerformed
+        cadastroPanel.setVisible(true);
+        listagemPanel.setVisible(false);
+    }//GEN-LAST:event_btnNovoFuncionarioActionPerformed
+
+    private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
+        cadastroPanel.setVisible(false);
+        listagemPanel.setVisible(true);
+    }//GEN-LAST:event_btnVoltarActionPerformed
+
+    private void topBarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topBarMousePressed
+        // TODO add your handling code here:
+        mpX = evt.getX();
+        mpY = evt.getY();
+    }//GEN-LAST:event_topBarMousePressed
+
+    private void topBarMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topBarMouseDragged
+        // TODO add your handling code here:
+        setLocation(
+            getLocation().x + evt.getX() - mpX,
+            getLocation().y + evt.getY() - mpY );
+    }//GEN-LAST:event_topBarMouseDragged
+
+    private void closeLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_closeLabelMouseClicked
+
+        this.dispose();
+    }//GEN-LAST:event_closeLabelMouseClicked
+
+    private void funcionariosPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_funcionariosPanelComponentShown
+        cadastroPanel.setVisible(false);
+        listagemPanel.setVisible(true);
+    }//GEN-LAST:event_funcionariosPanelComponentShown
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+        
+        Funcionario funcionario = new Funcionario();
+        funcionario.setNome(nomeInput.getText());
+        funcionario.setTelefone(telefoneInput.getText());
+        funcionario.setEndereco(enderecoInput.getText());
+        funcionario.setCidade(cidadeInput.getText());
+        funcionario.setEstado(estadoInput.getText());
+        
+        FuncionarioDao funcionarioDao = new FuncionarioDao();
+        funcionarioDao.save(funcionario);
+        
+        nomeInput.setText("");
+        telefoneInput.setText("");
+        enderecoInput.setText("");
+        estadoInput.setText("");
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -212,20 +467,27 @@ public class App extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNovoFuncionario;
     private javax.swing.JButton btnNovoHospede;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnVoltar;
+    private javax.swing.JPanel cadastroPanel;
+    private javax.swing.JTextField cidadeInput;
+    private javax.swing.JLabel closeLabel;
     private javax.swing.JDesktopPane desktopPane;
+    private javax.swing.JTextField enderecoInput;
+    private javax.swing.JTextField estadoInput;
     private javax.swing.JPanel funcionariosPanel;
     private javax.swing.JPanel homePanel;
     private javax.swing.JPanel hopedesPanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JPanel listagemPanel;
+    private javax.swing.JTextField nomeInput;
     private javax.swing.JTabbedPane tabs;
+    private javax.swing.JTextField telefoneInput;
+    private javax.swing.JPanel topBar;
     // End of variables declaration//GEN-END:variables
 
 }

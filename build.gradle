@@ -8,6 +8,8 @@ mainClassName = 'HotelProject.App'
 
 repositories {
     jcenter()
+    mavenCentral()
+     maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -19,6 +21,8 @@ dependencies {
 
     implementation 'io.github.vincenzopalazzo:material-ui-swing:1.0.3'
     implementation 'com.formdev.flatlaf:flatlaf-core:0.9'
+ //   implementation 'org.ocsoft:flatlaf:+'
+   // implementation 'com.github.tohhy:flatlaf:0.0.3'
     
     testCompile 'junit:junit:4.12'
 }
