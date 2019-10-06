@@ -20,7 +20,7 @@ interface AbstractDao<T> {
 
     void update(T entity);
 
-    T find(String id);
+    T find(Integer id);
     
     List<T> getAll();
 

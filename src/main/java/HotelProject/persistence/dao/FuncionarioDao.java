@@ -34,8 +34,8 @@ public class FuncionarioDao extends Dao implements AbstractDao<Funcionario> {
     }
 
     @Override
-    public Funcionario find(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Funcionario find(Integer id) {
+        return entityManager.find(Funcionario.class, id);
     }
 
     @Override
