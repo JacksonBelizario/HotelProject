@@ -8,7 +8,16 @@ package HotelProject;
 import HotelProject.persistence.dao.FuncionarioDao;
 import HotelProject.persistence.entities.Funcionario;
 import HotelProject.ui.CenterTabbedPane;
+import HotelProject.utils.DateUtils.DateVerifier;
 import com.formdev.flatlaf.FlatLightLaf;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.text.MaskFormatter;
 
 /**
  *
@@ -17,11 +26,20 @@ import com.formdev.flatlaf.FlatLightLaf;
 public class App extends javax.swing.JFrame {
     
     int mpX, mpY;
+    FuncionarioDao funcionarioDao = new FuncionarioDao();
+    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+    MaskFormatter mascara;
 
     /**
      * Creates new form NewMDIApplication
      */
     public App() {
+        try {
+            mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         initComponents();
         tabs.setUI(new CenterTabbedPane());
     }
@@ -50,10 +68,12 @@ public class App extends javax.swing.JFrame {
         estadoInput = new javax.swing.JTextField();
         telefoneInput = new javax.swing.JTextField();
         btnSave = new javax.swing.JButton();
+        salarioInput = new javax.swing.JTextField();
+        dataNascimentoInput = new javax.swing.JFormattedTextField(mascara);
         listagemPanel = new javax.swing.JPanel();
         btnNovoFuncionario = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tableEmployee = new javax.swing.JTable();
         hopedesPanel = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
@@ -201,6 +221,11 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        salarioInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Salário"));
+
+        dataNascimentoInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Data Nascimento"));
+        dataNascimentoInput.setInputVerifier(new DateVerifier());
+
         javax.swing.GroupLayout cadastroPanelLayout = new javax.swing.GroupLayout(cadastroPanel);
         cadastroPanel.setLayout(cadastroPanelLayout);
         cadastroPanelLayout.setHorizontalGroup(
@@ -223,7 +248,11 @@ public class App extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cadastroPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSave)))
+                        .addComponent(btnSave))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cadastroPanelLayout.createSequentialGroup()
+                        .addComponent(dataNascimentoInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(salarioInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         cadastroPanelLayout.setVerticalGroup(
@@ -241,13 +270,26 @@ public class App extends javax.swing.JFrame {
                 .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cidadeInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(estadoInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 135, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(salarioInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dataNascimentoInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
                 .addComponent(btnSave)
                 .addContainerGap())
         );
 
         listagemPanel.setBackground(new java.awt.Color(255, 255, 255));
         listagemPanel.setForeground(new java.awt.Color(255, 255, 255));
+        listagemPanel.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                listagemPanelAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
         btnNovoFuncionario.setIcon(new javax.swing.ImageIcon("C:\\Users\\Jackson\\Desktop\\NetBeansProjects\\icons\\add-user.png")); // NOI18N
         btnNovoFuncionario.setBorder(null);
@@ -258,18 +300,23 @@ public class App extends javax.swing.JFrame {
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tableEmployee.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"1", "Jackson", null, "1200"},
-                {"2", "Aline", null, "1500"},
-                {"3", "Igor", null, "2000"},
-                {"4", "Miguel", null, "3000"}
+
             },
             new String [] {
-                "ID", "Nome", "Endereço", "Salário"
+                "ID", "Nome", "Endereço", "Cidade", "Estado", "Telefone", "Data Nasc.", "Salário"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tableEmployee);
 
         javax.swing.GroupLayout listagemPanelLayout = new javax.swing.GroupLayout(listagemPanel);
         listagemPanel.setLayout(listagemPanelLayout);
@@ -424,20 +471,84 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         Funcionario funcionario = new Funcionario();
+        
+        if (nomeInput.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Informe o nome", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (salarioInput.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Informe o salário", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         funcionario.setNome(nomeInput.getText());
         funcionario.setTelefone(telefoneInput.getText());
         funcionario.setEndereco(enderecoInput.getText());
         funcionario.setCidade(cidadeInput.getText());
         funcionario.setEstado(estadoInput.getText());
+        funcionario.setDataNascimento(dataNascimentoInput.getText(), df);
+        funcionario.setSalario(salarioInput.getText());
         
-        FuncionarioDao funcionarioDao = new FuncionarioDao();
         funcionarioDao.save(funcionario);
         
         nomeInput.setText("");
         telefoneInput.setText("");
         enderecoInput.setText("");
+        cidadeInput.setText("");
         estadoInput.setText("");
+        dataNascimentoInput.setText("");
+        salarioInput.setText("");
+        
+        DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
+        
+        dataModel.addRow(getFuncionarioRow(funcionario));
+        
+        cadastroPanel.setVisible(false);
+        listagemPanel.setVisible(true);
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void listagemPanelAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_listagemPanelAncestorAdded
+        fillEmployeeTable();
+    }//GEN-LAST:event_listagemPanelAncestorAdded
+ 
+    private void fillEmployeeTable() {
+        DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
+        
+        if (dataModel.getRowCount() > 0) {
+            return;
+        }
+        
+        List<Funcionario> funcionarios = funcionarioDao.getAll();
+        
+        Iterator<Funcionario> funcionariosIterator = funcionarios.iterator();
+        while (funcionariosIterator.hasNext()){
+            Funcionario funcionario = (Funcionario) funcionariosIterator.next();
+            dataModel.addRow(getFuncionarioRow(funcionario));
+         }
+         
+        tableEmployee.setModel(dataModel);
+    }
+    
+    private Object[] getFuncionarioRow(Funcionario funcionario) {
+        String dataNascimento =  "";
+        try {
+            dataNascimento = df.format(funcionario.getDataNascimento());
+        } catch(Exception ex) {
+            //
+        }
+        return new Object[] {
+            funcionario.getId(),
+            funcionario.getNome(),
+            funcionario.getEndereco(),
+            funcionario.getCidade(),
+            funcionario.getEstado(),
+            funcionario.getTelefone(),
+            dataNascimento,
+            funcionario.getSalario()
+        };
+    }
+    
 
     /**
      * @param args the command line arguments
@@ -472,6 +583,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JPanel cadastroPanel;
     private javax.swing.JTextField cidadeInput;
     private javax.swing.JLabel closeLabel;
+    private javax.swing.JFormattedTextField dataNascimentoInput;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JTextField enderecoInput;
     private javax.swing.JTextField estadoInput;
@@ -481,10 +593,11 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JPanel listagemPanel;
     private javax.swing.JTextField nomeInput;
+    private javax.swing.JTextField salarioInput;
+    private javax.swing.JTable tableEmployee;
     private javax.swing.JTabbedPane tabs;
     private javax.swing.JTextField telefoneInput;
     private javax.swing.JPanel topBar;
