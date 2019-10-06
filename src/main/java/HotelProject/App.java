@@ -81,7 +81,7 @@ public class App extends javax.swing.JFrame {
         telefoneInput = new javax.swing.JFormattedTextField(phoneMask);
         btnSave = new javax.swing.JButton();
         dataNascimentoInput = new javax.swing.JFormattedTextField(maskDate);
-        salarioInput = new javax.swing.JFormattedTextField(new DecimalFormat("#.0"));
+        salarioInput = new javax.swing.JFormattedTextField(numberFormat);
         listagemPanel = new javax.swing.JPanel();
         btnNovoFuncionario = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -221,6 +221,11 @@ public class App extends javax.swing.JFrame {
         dataNascimentoInput.setInputVerifier(new DateVerifier());
 
         salarioInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Salário"));
+        salarioInput.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                salarioInputPropertyChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout cadastroPanelLayout = new javax.swing.GroupLayout(cadastroPanel);
         cadastroPanel.setLayout(cadastroPanelLayout);
@@ -440,11 +445,13 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNovoFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoFuncionarioActionPerformed
+        resetFormEmployee();
         cadastroPanel.setVisible(true);
         listagemPanel.setVisible(false);
     }//GEN-LAST:event_btnNovoFuncionarioActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
+        resetFormEmployee();
         cadastroPanel.setVisible(false);
         listagemPanel.setVisible(true);
     }//GEN-LAST:event_btnVoltarActionPerformed
@@ -512,6 +519,13 @@ public class App extends javax.swing.JFrame {
             dataModel.insertRow(editIndex, getFuncionarioRow(funcionario));
         }
         
+        resetFormEmployee();
+        
+        cadastroPanel.setVisible(false);
+        listagemPanel.setVisible(true);
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void resetFormEmployee() {
         nomeInput.setText("");
         salarioInput.setText("");
         enderecoInput.setText("");
@@ -519,13 +533,10 @@ public class App extends javax.swing.JFrame {
         estadoInput.setText("");
         dataNascimentoInput.setText("");
         salarioInput.setText("");
-        
+        telefoneInput.setText("");
         funcionario = null;
-        
-        cadastroPanel.setVisible(false);
-        listagemPanel.setVisible(true);
-    }//GEN-LAST:event_btnSaveActionPerformed
-
+    }
+    
     private void listagemPanelAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_listagemPanelAncestorAdded
         fillEmployeeTable();
     }//GEN-LAST:event_listagemPanelAncestorAdded
@@ -586,7 +597,12 @@ public class App extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnDelFuncionarioMouseClicked
 
-     
+    private void salarioInputPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_salarioInputPropertyChange
+        if (evt.getSource() != null) {
+//            salarioInput.setValue((Double) evt.getNewValue());
+        }
+    }//GEN-LAST:event_salarioInputPropertyChange
+
     public String validateDouble(String str) {
         if (!str.matches("\\d*(\\.\\d{0,2})?")) {
             str = str.substring(0, str.length() - 1);
