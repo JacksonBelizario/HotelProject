@@ -9,7 +9,7 @@ mainClassName = 'HotelProject.App'
 repositories {
     jcenter()
     mavenCentral()
-     maven { url "https://jitpack.io" }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -17,12 +17,9 @@ dependencies {
     implementation 'org.hibernate:hibernate-entitymanager:5.4.6.Final'
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'org.postgresql:postgresql:42.2.8'
-
-
     implementation 'io.github.vincenzopalazzo:material-ui-swing:1.0.3'
     implementation 'com.formdev.flatlaf:flatlaf-core:0.9'
- //   implementation 'org.ocsoft:flatlaf:+'
-   // implementation 'com.github.tohhy:flatlaf:0.0.3'
+    implementation 'org.apache.commons:commons-lang3:3.9'
     
     testCompile 'junit:junit:4.12'
 }

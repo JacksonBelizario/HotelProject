@@ -9,9 +9,10 @@ import HotelProject.persistence.dao.FuncionarioDao;
 import HotelProject.persistence.entities.Funcionario;
 import HotelProject.ui.CenterTabbedPane;
 import HotelProject.utils.DateUtils.DateVerifier;
+import HotelProject.utils.NumberUtils;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Toolkit;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,9 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.MaskFormatter;
-import javax.swing.text.NumberFormatter;
 
 /**
  *
@@ -34,9 +33,8 @@ public class App extends javax.swing.JFrame {
     SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
     MaskFormatter maskDate, phoneMask;
     Funcionario funcionario;
+    NumberFormat numberFormat = NumberFormat.getNumberInstance();
     int editIndex = -1;
-    DecimalFormat dFormat = new DecimalFormat("#,###,###.00");
-    NumberFormatter numberFormat;
 
     /**
      * Creates new form NewMDIApplication
@@ -48,12 +46,9 @@ public class App extends javax.swing.JFrame {
             phoneMask = new MaskFormatter("(##) #####-####");
             phoneMask.setPlaceholderCharacter('_');
         } catch (ParseException e) {
-            e.printStackTrace();
         }
-        numberFormat = new NumberFormatter(dFormat);
         
         initComponents();
-        tabs.setUI(new CenterTabbedPane());
     }
 
     /**
@@ -69,6 +64,7 @@ public class App extends javax.swing.JFrame {
         topBar = new javax.swing.JPanel();
         closeLabel = new javax.swing.JLabel();
         tabs = new javax.swing.JTabbedPane();
+        tabs.setUI(new CenterTabbedPane());
         homePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         funcionariosPanel = new javax.swing.JPanel();
@@ -224,6 +220,14 @@ public class App extends javax.swing.JFrame {
         salarioInput.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 salarioInputPropertyChange(evt);
+            }
+        });
+        salarioInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                salarioInputKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                salarioInputKeyTyped(evt);
             }
         });
 
@@ -505,9 +509,8 @@ public class App extends javax.swing.JFrame {
         funcionario.setCidade(cidadeInput.getText());
         funcionario.setEstado(estadoInput.getText());
         funcionario.setDataNascimento(dataNascimentoInput.getText(), df);
-        funcionario.setSalario(salarioInput.getText());
-        
-        
+        funcionario.setSalario(NumberUtils.getNumericValue(salarioInput.getText()));
+     
         
         if (!edit) {
             funcionarioDao.save(funcionario);
@@ -554,19 +557,8 @@ public class App extends javax.swing.JFrame {
             enderecoInput.setText(funcionario.getEndereco());
             cidadeInput.setText(funcionario.getCidade());
             estadoInput.setText(funcionario.getEstado());
-            String dataNascimento =  "";
-            try {
-                dataNascimento = df.format(funcionario.getDataNascimento());
-            } catch(Exception ex) {
-                //
-            }
-            dataNascimentoInput.setText(dataNascimento);
-            String salario =  "";
-            try {                salario = funcionario.getSalario().toString();
-            } catch(Exception ex) {
-                //
-            }
-            salarioInput.setText(salario);
+            dataNascimentoInput.setText(formatDate(funcionario.getDataNascimento()));
+            salarioInput.setText(formatNumber(funcionario.getSalario()));
 
             cadastroPanel.setVisible(true);
             listagemPanel.setVisible(false);
@@ -598,11 +590,22 @@ public class App extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDelFuncionarioMouseClicked
 
     private void salarioInputPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_salarioInputPropertyChange
-        if (evt.getSource() != null) {
-//            salarioInput.setValue((Double) evt.getNewValue());
-        }
+
     }//GEN-LAST:event_salarioInputPropertyChange
 
+    private void salarioInputKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_salarioInputKeyTyped
+       formatSalarioInput();
+    }//GEN-LAST:event_salarioInputKeyTyped
+
+    private void salarioInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_salarioInputKeyPressed
+        formatSalarioInput();
+    }//GEN-LAST:event_salarioInputKeyPressed
+
+    private void formatSalarioInput() {
+        String str = salarioInput.getText();
+        salarioInput.setText(NumberUtils.format(str));
+    }
+    
     public String validateDouble(String str) {
         if (!str.matches("\\d*(\\.\\d{0,2})?")) {
             str = str.substring(0, str.length() - 1);
@@ -629,12 +632,6 @@ public class App extends javax.swing.JFrame {
     }
     
     private Object[] getFuncionarioRow(Funcionario funcionario) {
-        String dataNascimento =  "";
-        try {
-            dataNascimento = df.format(funcionario.getDataNascimento());
-        } catch(Exception ex) {
-            //
-        }
         return new Object[] {
             funcionario.getId(),
             funcionario.getNome(),
@@ -642,9 +639,29 @@ public class App extends javax.swing.JFrame {
             funcionario.getCidade(),
             funcionario.getEstado(),
             funcionario.getTelefone(),
-            dataNascimento,
-            funcionario.getSalario()
+            formatDate(funcionario.getDataNascimento()),
+            "R$ " + formatNumber(funcionario.getSalario())
         };
+    }
+    
+    private String formatDate(Date date) {
+        String dateStr =  "";
+        try {
+            dateStr = df.format(date);
+        } catch(Exception ex) {
+            //
+        }
+        return dateStr;
+    }
+    
+    private String formatNumber(Double value) {
+        String valueStr =  "0";
+        try {
+            valueStr = numberFormat.format(value);
+        } catch(Exception ex) {
+            //
+        }
+        return valueStr;
     }
     
 
@@ -668,7 +685,6 @@ public class App extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new App().setVisible(true);
-                
             }
         });
     }
