@@ -67,4 +67,11 @@ public class NumberUtils {
             return 0.0;
         }
     }
+    
+    public static String validateDouble(String str) {
+        if (!str.matches("\\d*(\\.\\d{0,2})?")) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
 }

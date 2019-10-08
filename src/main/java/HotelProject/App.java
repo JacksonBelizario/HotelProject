@@ -5,22 +5,10 @@
  */
 package HotelProject;
 
-import HotelProject.persistence.dao.FuncionarioDao;
-import HotelProject.persistence.entities.Funcionario;
 import HotelProject.ui.CenterTabbedPane;
-import HotelProject.utils.DateUtils.DateVerifier;
-import HotelProject.utils.NumberUtils;
+import HotelProject.ui.FuncionariosPanel;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Toolkit;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.text.MaskFormatter;
 
 /**
  *
@@ -28,27 +16,24 @@ import javax.swing.text.MaskFormatter;
  */
 public class App extends javax.swing.JFrame {
     
+    private javax.swing.JPanel funcionariosPanel;
+    
     int mpX, mpY;
-    FuncionarioDao funcionarioDao = new FuncionarioDao();
-    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-    MaskFormatter maskDate, phoneMask;
-    Funcionario funcionario;
-    NumberFormat numberFormat = NumberFormat.getNumberInstance();
-    int editIndex = -1;
 
     /**
      * Creates new form NewMDIApplication
      */
     public App() {
-        try {
-            maskDate = new MaskFormatter("##/##/####");
-            maskDate.setPlaceholderCharacter('_');
-            phoneMask = new MaskFormatter("(##) #####-####");
-            phoneMask.setPlaceholderCharacter('_');
-        } catch (ParseException e) {
-        }
-        
         initComponents();
+        initTabsComponents();
+    }
+    
+    private void initTabsComponents() {
+        funcionariosPanel = new FuncionariosPanel();
+//        hospedesPanel = new HospedesPanel();
+        
+        tabs.addTab("Funcionários", funcionariosPanel);
+//        tabs.addTab("Hospedes", hospedesPanel);
     }
 
     /**
@@ -67,27 +52,6 @@ public class App extends javax.swing.JFrame {
         tabs.setUI(new CenterTabbedPane());
         homePanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        funcionariosPanel = new javax.swing.JPanel();
-        cadastroPanel = new javax.swing.JPanel();
-        btnVoltar = new javax.swing.JButton();
-        nomeInput = new javax.swing.JTextField();
-        enderecoInput = new javax.swing.JTextField();
-        cidadeInput = new javax.swing.JTextField();
-        estadoInput = new javax.swing.JTextField();
-        telefoneInput = new javax.swing.JFormattedTextField(phoneMask);
-        btnSave = new javax.swing.JButton();
-        dataNascimentoInput = new javax.swing.JFormattedTextField(maskDate);
-        salarioInput = new javax.swing.JFormattedTextField(numberFormat);
-        listagemPanel = new javax.swing.JPanel();
-        btnNovoFuncionario = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tableEmployee = new javax.swing.JTable();
-        btnDelFuncionario = new javax.swing.JButton();
-        btnEditFuncionario = new javax.swing.JButton();
-        hopedesPanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        btnNovoHospede = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Hotel Manager");
@@ -157,7 +121,7 @@ public class App extends javax.swing.JFrame {
         homePanelLayout.setHorizontalGroup(
             homePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(homePanelLayout.createSequentialGroup()
-                .addContainerGap(158, Short.MAX_VALUE)
+                .addContainerGap(215, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(153, 153, 153))
         );
@@ -171,265 +135,6 @@ public class App extends javax.swing.JFrame {
 
         tabs.addTab("Início", homePanel);
 
-        funcionariosPanel.setBackground(new java.awt.Color(255, 255, 255));
-        funcionariosPanel.addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentShown(java.awt.event.ComponentEvent evt) {
-                funcionariosPanelComponentShown(evt);
-            }
-        });
-
-        cadastroPanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        btnVoltar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/back.png"))); // NOI18N
-        btnVoltar.setBorder(null);
-        btnVoltar.setBorderPainted(false);
-        btnVoltar.setIconTextGap(0);
-        btnVoltar.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnVoltar.setMinimumSize(new java.awt.Dimension(10, 10));
-        btnVoltar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnVoltarActionPerformed(evt);
-            }
-        });
-
-        nomeInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Nome"));
-
-        enderecoInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Endereço"));
-
-        cidadeInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Cidade"));
-
-        estadoInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Estado"));
-
-        telefoneInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Telefone"));
-
-        btnSave.setIcon(new javax.swing.ImageIcon("C:\\Users\\Jackson\\Desktop\\NetBeansProjects\\icons\\save_50px.png")); // NOI18N
-        btnSave.setBorder(null);
-        btnSave.setBorderPainted(false);
-        btnSave.setIconTextGap(0);
-        btnSave.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
-
-        dataNascimentoInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Data Nascimento"));
-        dataNascimentoInput.setInputVerifier(new DateVerifier());
-
-        salarioInput.setBorder(javax.swing.BorderFactory.createTitledBorder("Salário"));
-        salarioInput.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                salarioInputPropertyChange(evt);
-            }
-        });
-        salarioInput.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                salarioInputKeyPressed(evt);
-            }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                salarioInputKeyTyped(evt);
-            }
-        });
-
-        javax.swing.GroupLayout cadastroPanelLayout = new javax.swing.GroupLayout(cadastroPanel);
-        cadastroPanel.setLayout(cadastroPanelLayout);
-        cadastroPanelLayout.setHorizontalGroup(
-            cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cadastroPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(enderecoInput)
-                    .addGroup(cadastroPanelLayout.createSequentialGroup()
-                        .addComponent(cidadeInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(estadoInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, cadastroPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnSave))
-                    .addGroup(cadastroPanelLayout.createSequentialGroup()
-                        .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(cadastroPanelLayout.createSequentialGroup()
-                                .addComponent(nomeInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(telefoneInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(cadastroPanelLayout.createSequentialGroup()
-                                .addComponent(dataNascimentoInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(salarioInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        cadastroPanelLayout.setVerticalGroup(
-            cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(cadastroPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(nomeInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(telefoneInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(enderecoInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cidadeInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(estadoInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dataNascimentoInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(salarioInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addContainerGap())
-        );
-
-        listagemPanel.setBackground(new java.awt.Color(255, 255, 255));
-        listagemPanel.setForeground(new java.awt.Color(255, 255, 255));
-        listagemPanel.addAncestorListener(new javax.swing.event.AncestorListener() {
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
-                listagemPanelAncestorAdded(evt);
-            }
-            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-        });
-
-        btnNovoFuncionario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/add-user.png"))); // NOI18N
-        btnNovoFuncionario.setBorder(null);
-        btnNovoFuncionario.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnNovoFuncionario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNovoFuncionarioActionPerformed(evt);
-            }
-        });
-
-        tableEmployee.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "Nome", "Endereço", "Cidade", "Estado", "Telefone", "Data Nasc.", "Salário"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane1.setViewportView(tableEmployee);
-
-        btnDelFuncionario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/remove-user.png"))); // NOI18N
-        btnDelFuncionario.setBorder(null);
-        btnDelFuncionario.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnDelFuncionario.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnDelFuncionarioMouseClicked(evt);
-            }
-        });
-
-        btnEditFuncionario.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/edit-user.png"))); // NOI18N
-        btnEditFuncionario.setBorder(null);
-        btnEditFuncionario.setMargin(new java.awt.Insets(2, 2, 2, 2));
-        btnEditFuncionario.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditFuncionarioActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout listagemPanelLayout = new javax.swing.GroupLayout(listagemPanel);
-        listagemPanel.setLayout(listagemPanelLayout);
-        listagemPanelLayout.setHorizontalGroup(
-            listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(listagemPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listagemPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnDelFuncionario)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEditFuncionario)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnNovoFuncionario)))
-                .addContainerGap())
-        );
-        listagemPanelLayout.setVerticalGroup(
-            listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listagemPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnNovoFuncionario)
-                    .addComponent(btnDelFuncionario)
-                    .addComponent(btnEditFuncionario))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout funcionariosPanelLayout = new javax.swing.GroupLayout(funcionariosPanel);
-        funcionariosPanel.setLayout(funcionariosPanelLayout);
-        funcionariosPanelLayout.setHorizontalGroup(
-            funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(listagemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(cadastroPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        funcionariosPanelLayout.setVerticalGroup(
-            funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(listagemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(funcionariosPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(cadastroPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        tabs.addTab("Funcionários", funcionariosPanel);
-
-        hopedesPanel.setBackground(new java.awt.Color(255, 255, 255));
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"1", "Jackson", null, "1200"},
-                {"2", "Aline", null, "1500"},
-                {"3", "Igor", null, "2000"},
-                {"4", "Miguel", null, "3000"}
-            },
-            new String [] {
-                "ID", "Nome", "Endereço", "Salário"
-            }
-        ));
-        jScrollPane2.setViewportView(jTable2);
-
-        btnNovoHospede.setText("NOVO");
-
-        javax.swing.GroupLayout hopedesPanelLayout = new javax.swing.GroupLayout(hopedesPanel);
-        hopedesPanel.setLayout(hopedesPanelLayout);
-        hopedesPanelLayout.setHorizontalGroup(
-            hopedesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(hopedesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(hopedesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, hopedesPanelLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnNovoHospede)))
-                .addContainerGap())
-        );
-        hopedesPanelLayout.setVerticalGroup(
-            hopedesPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, hopedesPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnNovoHospede)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tabs.addTab("Hóspedes", hopedesPanel);
-
         desktopPane.add(tabs, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -440,25 +145,11 @@ public class App extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(desktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, 401, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnNovoFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoFuncionarioActionPerformed
-        resetFormEmployee();
-        cadastroPanel.setVisible(true);
-        listagemPanel.setVisible(false);
-    }//GEN-LAST:event_btnNovoFuncionarioActionPerformed
-
-    private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-        resetFormEmployee();
-        cadastroPanel.setVisible(false);
-        listagemPanel.setVisible(true);
-    }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void topBarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_topBarMousePressed
         // TODO add your handling code here:
@@ -478,192 +169,6 @@ public class App extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_closeLabelMouseClicked
 
-    private void funcionariosPanelComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_funcionariosPanelComponentShown
-        cadastroPanel.setVisible(false);
-        listagemPanel.setVisible(true);
-    }//GEN-LAST:event_funcionariosPanelComponentShown
-
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        
-        DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
-        
-        Boolean edit = funcionario != null;
-        
-        if (!edit) {
-            funcionario = new Funcionario();
-        }
-        
-        if (nomeInput.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Informe o nome", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if (salarioInput.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Informe o salário", "Erro", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        funcionario.setNome(nomeInput.getText());
-        funcionario.setTelefone(telefoneInput.getText());
-        funcionario.setEndereco(enderecoInput.getText());
-        funcionario.setCidade(cidadeInput.getText());
-        funcionario.setEstado(estadoInput.getText());
-        funcionario.setDataNascimento(dataNascimentoInput.getText(), df);
-        funcionario.setSalario(NumberUtils.getNumericValue(salarioInput.getText()));
-     
-        
-        if (!edit) {
-            funcionarioDao.save(funcionario);
-            dataModel.addRow(getFuncionarioRow(funcionario));
-        }
-        else {
-            funcionarioDao.update(funcionario);
-            dataModel.removeRow(editIndex);
-            dataModel.insertRow(editIndex, getFuncionarioRow(funcionario));
-        }
-        
-        resetFormEmployee();
-        
-        cadastroPanel.setVisible(false);
-        listagemPanel.setVisible(true);
-    }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void resetFormEmployee() {
-        nomeInput.setText("");
-        salarioInput.setText("");
-        enderecoInput.setText("");
-        cidadeInput.setText("");
-        estadoInput.setText("");
-        dataNascimentoInput.setText("");
-        salarioInput.setText("");
-        telefoneInput.setText("");
-        funcionario = null;
-    }
-    
-    private void listagemPanelAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_listagemPanelAncestorAdded
-        fillEmployeeTable();
-    }//GEN-LAST:event_listagemPanelAncestorAdded
-
-    private void btnEditFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditFuncionarioActionPerformed
-        DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
-        
-        editIndex = tableEmployee.getSelectedRow();
-        if (editIndex >= 0) {
-            Integer id = Integer.parseInt(dataModel.getValueAt(editIndex, 0).toString());
-            funcionario = funcionarioDao.find(id);
-            
-            nomeInput.setText(funcionario.getNome());
-            telefoneInput.setText(funcionario.getTelefone());
-            enderecoInput.setText(funcionario.getEndereco());
-            cidadeInput.setText(funcionario.getCidade());
-            estadoInput.setText(funcionario.getEstado());
-            dataNascimentoInput.setText(formatDate(funcionario.getDataNascimento()));
-            salarioInput.setText(formatNumber(funcionario.getSalario()));
-
-            cadastroPanel.setVisible(true);
-            listagemPanel.setVisible(false);
-        }
-        else {
-            JOptionPane.showMessageDialog(null, "Selecione na tabela", "Info", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }//GEN-LAST:event_btnEditFuncionarioActionPerformed
-
-    private void btnDelFuncionarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDelFuncionarioMouseClicked
-        DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
-        
-        int i = tableEmployee.getSelectedRow();
-        if (i >= 0) {
-            Integer id = Integer.parseInt(dataModel.getValueAt(i, 0).toString());
-            Funcionario funcionario = funcionarioDao.find(id);
-            
-            int input = JOptionPane.showConfirmDialog(null, "Remover "+ funcionario.getNome()+ "?", "Remover funcionário",
-                            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-
-            if (input == JOptionPane.YES_OPTION) {
-                funcionarioDao.delete(funcionario);
-                dataModel.removeRow(i);
-            }
-        }
-        else {
-            JOptionPane.showMessageDialog(null, "Selecione na tabela", "Info", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }//GEN-LAST:event_btnDelFuncionarioMouseClicked
-
-    private void salarioInputPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_salarioInputPropertyChange
-
-    }//GEN-LAST:event_salarioInputPropertyChange
-
-    private void salarioInputKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_salarioInputKeyTyped
-       formatSalarioInput();
-    }//GEN-LAST:event_salarioInputKeyTyped
-
-    private void salarioInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_salarioInputKeyPressed
-        formatSalarioInput();
-    }//GEN-LAST:event_salarioInputKeyPressed
-
-    private void formatSalarioInput() {
-        String str = salarioInput.getText();
-        salarioInput.setText(NumberUtils.format(str));
-    }
-    
-    public String validateDouble(String str) {
-        if (!str.matches("\\d*(\\.\\d{0,2})?")) {
-            str = str.substring(0, str.length() - 1);
-        }
-        return str;
-    }
-    
-    private void fillEmployeeTable() {
-        DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
-        
-        if (dataModel.getRowCount() > 0) {
-            return;
-        }
-        
-        List<Funcionario> funcionarios = funcionarioDao.getAll();
-        
-        Iterator<Funcionario> funcionariosIterator = funcionarios.iterator();
-        while (funcionariosIterator.hasNext()){
-            Funcionario funcionario = (Funcionario) funcionariosIterator.next();
-            dataModel.addRow(getFuncionarioRow(funcionario));
-         }
-         
-        tableEmployee.setModel(dataModel);
-    }
-    
-    private Object[] getFuncionarioRow(Funcionario funcionario) {
-        return new Object[] {
-            funcionario.getId(),
-            funcionario.getNome(),
-            funcionario.getEndereco(),
-            funcionario.getCidade(),
-            funcionario.getEstado(),
-            funcionario.getTelefone(),
-            formatDate(funcionario.getDataNascimento()),
-            "R$ " + formatNumber(funcionario.getSalario())
-        };
-    }
-    
-    private String formatDate(Date date) {
-        String dateStr =  "";
-        try {
-            dateStr = df.format(date);
-        } catch(Exception ex) {
-            //
-        }
-        return dateStr;
-    }
-    
-    private String formatNumber(Double value) {
-        String valueStr =  "0";
-        try {
-            valueStr = numberFormat.format(value);
-        } catch(Exception ex) {
-            //
-        }
-        return valueStr;
-    }
-    
 
     /**
      * @param args the command line arguments
@@ -690,32 +195,11 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnDelFuncionario;
-    private javax.swing.JButton btnEditFuncionario;
-    private javax.swing.JButton btnNovoFuncionario;
-    private javax.swing.JButton btnNovoHospede;
-    private javax.swing.JButton btnSave;
-    private javax.swing.JButton btnVoltar;
-    private javax.swing.JPanel cadastroPanel;
-    private javax.swing.JTextField cidadeInput;
     private javax.swing.JLabel closeLabel;
-    private javax.swing.JFormattedTextField dataNascimentoInput;
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JTextField enderecoInput;
-    private javax.swing.JTextField estadoInput;
-    private javax.swing.JPanel funcionariosPanel;
     private javax.swing.JPanel homePanel;
-    private javax.swing.JPanel hopedesPanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JPanel listagemPanel;
-    private javax.swing.JTextField nomeInput;
-    private javax.swing.JFormattedTextField salarioInput;
-    private javax.swing.JTable tableEmployee;
     private javax.swing.JTabbedPane tabs;
-    private javax.swing.JTextField telefoneInput;
     private javax.swing.JPanel topBar;
     // End of variables declaration//GEN-END:variables
 
