@@ -7,6 +7,7 @@ package HotelProject;
 
 import HotelProject.ui.CenterTabbedPane;
 import HotelProject.ui.FuncionariosPanel;
+import HotelProject.ui.HospedesPanel;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.Toolkit;
 
@@ -16,7 +17,7 @@ import java.awt.Toolkit;
  */
 public class App extends javax.swing.JFrame {
     
-    private javax.swing.JPanel funcionariosPanel;
+    private javax.swing.JPanel funcionariosPanel, hospedesPanel;
     
     int mpX, mpY;
 
@@ -30,10 +31,10 @@ public class App extends javax.swing.JFrame {
     
     private void initTabsComponents() {
         funcionariosPanel = new FuncionariosPanel();
-//        hospedesPanel = new HospedesPanel();
+        hospedesPanel = new HospedesPanel();
         
         tabs.addTab("Funcionários", funcionariosPanel);
-//        tabs.addTab("Hospedes", hospedesPanel);
+        tabs.addTab("Hospedes", hospedesPanel);
     }
 
     /**

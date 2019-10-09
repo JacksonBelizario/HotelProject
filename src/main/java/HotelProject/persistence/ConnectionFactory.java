@@ -15,7 +15,7 @@ import javax.persistence.Persistence;
  */
 public class ConnectionFactory {
     
-	private static EntityManagerFactory factory = Persistence.createEntityManagerFactory("hotel");;
+	private static final EntityManagerFactory factory = Persistence.createEntityManagerFactory("hotel");;
 	
 	public static EntityManager getEntityManager(){
             return factory.createEntityManager();

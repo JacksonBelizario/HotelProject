@@ -5,6 +5,7 @@
  */
 package HotelProject.persistence.dao;
 
+import HotelProject.persistence.ConnectionFactory;
 import javax.persistence.EntityManager;
 
 /**
@@ -13,5 +14,5 @@ import javax.persistence.EntityManager;
  */
 public class Dao {
     
-    protected static EntityManager entityManager = HotelProject.persistence.ConnectionFactory.getEntityManager();
+    protected static EntityManager entityManager = ConnectionFactory.getEntityManager();
 }
