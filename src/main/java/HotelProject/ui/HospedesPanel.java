@@ -78,6 +78,7 @@ public class HospedesPanel extends javax.swing.JPanel {
         tableEmployee = new javax.swing.JTable();
         btnDelFuncionario = new javax.swing.JButton();
         btnEditFuncionario = new javax.swing.JButton();
+        btnBankCard = new javax.swing.JButton();
 
         setLayout(null);
 
@@ -254,6 +255,10 @@ public class HospedesPanel extends javax.swing.JPanel {
             }
         });
 
+        btnBankCard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bank-card.png"))); // NOI18N
+        btnBankCard.setBorder(null);
+        btnBankCard.setMargin(new java.awt.Insets(2, 2, 2, 2));
+
         javax.swing.GroupLayout listagemPanelLayout = new javax.swing.GroupLayout(listagemPanel);
         listagemPanel.setLayout(listagemPanelLayout);
         listagemPanelLayout.setHorizontalGroup(
@@ -264,6 +269,8 @@ public class HospedesPanel extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, listagemPanelLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnBankCard)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnDelFuncionario)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnEditFuncionario)
@@ -278,7 +285,8 @@ public class HospedesPanel extends javax.swing.JPanel {
                 .addGroup(listagemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNovoFuncionario)
                     .addComponent(btnDelFuncionario)
-                    .addComponent(btnEditFuncionario))
+                    .addComponent(btnEditFuncionario)
+                    .addComponent(btnBankCard))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 320, Short.MAX_VALUE)
                 .addContainerGap())
@@ -464,6 +472,7 @@ public class HospedesPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBankCard;
     private javax.swing.JButton btnDelFuncionario;
     private javax.swing.JButton btnEditFuncionario;
     private javax.swing.JButton btnNovoFuncionario;
