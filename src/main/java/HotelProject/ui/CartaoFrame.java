@@ -5,7 +5,11 @@
  */
 package HotelProject.ui;
 
+import HotelProject.persistence.dao.DadosCartaoDao;
+import HotelProject.persistence.entities.DadosCartao;
 import java.awt.Toolkit;
+import java.text.ParseException;
+import javax.swing.JOptionPane;
 import javax.swing.text.MaskFormatter;
 
 /**
@@ -14,15 +18,42 @@ import javax.swing.text.MaskFormatter;
  */
 public class CartaoFrame extends javax.swing.JFrame {
     
-    MaskFormatter maskDate, phoneMask;
+    DadosCartaoDao dadosCartaoDao = new DadosCartaoDao();
+    DadosCartao dadosCartao;
+    Boolean edit = true;
     
+    MaskFormatter cardMask, monthMask, myMask, cvvMask;
+    Integer idHospede;
     int mpX, mpY;
 
     /**
      * Creates new form CartaoFrame
+     * @param idHospede
      */
-    public CartaoFrame() {
+    public CartaoFrame(Integer idHospede) {
+        this.idHospede = idHospede;
+
+        try {
+            cardMask = new MaskFormatter("#### #### #### ####");
+            myMask = new MaskFormatter("##");
+            cvvMask = new MaskFormatter("###");
+        } catch (ParseException e) {
+        }
         initComponents();
+        
+        dadosCartao = dadosCartaoDao.findByHospede(idHospede);
+        edit = dadosCartao != null;
+                
+        if (edit) {
+            cardNumberInput.setText(dadosCartao.getNumero());
+            holderInput.setText(dadosCartao.getNomeCartao());
+            cvvInput.setText(dadosCartao.getCodigoSeguranca());
+            monthInput.setText(dadosCartao.getValidadeMes());
+            yearInput.setText(dadosCartao.getValidadeAno());
+        } else {
+            dadosCartao = new DadosCartao();
+            dadosCartao.setCodigoHospede(idHospede);
+        }
     }
 
     /**
@@ -35,20 +66,21 @@ public class CartaoFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        bg = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         holderInput = new javax.swing.JTextField();
-        cardNumberInput = new javax.swing.JTextField();
-        monthInput = new javax.swing.JTextField();
-        yearInput = new javax.swing.JTextField();
-        cvvInput = new javax.swing.JTextField();
+        cardNumberInput = new javax.swing.JFormattedTextField(cardMask);
+        monthInput = new javax.swing.JFormattedTextField(myMask);
+        yearInput = new javax.swing.JFormattedTextField(myMask);
+        cvvInput = new javax.swing.JFormattedTextField(cvvMask);
+        btnSave = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cartão de Crédito");
         setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/bank-card.png")) );
         setResizable(false);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bank-card-bg.png"))); // NOI18N
+        bg.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bank-card-bg.png"))); // NOI18N
 
         jPanel2.setOpaque(false);
         jPanel2.setLayout(null);
@@ -103,6 +135,18 @@ public class CartaoFrame extends javax.swing.JFrame {
         jPanel2.add(cvvInput);
         cvvInput.setBounds(320, 150, 54, 26);
 
+        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/save_25px.png"))); // NOI18N
+        btnSave.setBorder(null);
+        btnSave.setBorderPainted(false);
+        btnSave.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnSave);
+        btnSave.setBounds(370, 10, 25, 25);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -110,7 +154,7 @@ public class CartaoFrame extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addComponent(jLabel1)
+                    .addComponent(bg)
                     .addGap(0, 0, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
@@ -119,7 +163,7 @@ public class CartaoFrame extends javax.swing.JFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 6, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
+                .addComponent(bg, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -156,46 +200,39 @@ public class CartaoFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_holderInputActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CartaoFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CartaoFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CartaoFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CartaoFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        
+        if (cardNumberInput.getText().trim().isEmpty()
+                || holderInput.getText().trim().isEmpty()
+                || cvvInput.getText().trim().isEmpty()
+                || monthInput.getText().trim().isEmpty()
+                || yearInput.getText().trim().isEmpty()
+            ) {
+            JOptionPane.showMessageDialog(null, "Preencha todos os campos", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        //</editor-fold>
+        
+        dadosCartao.setNumero(cardNumberInput.getText());                                 
+        dadosCartao.setNomeCartao(holderInput.getText());                           
+        dadosCartao.setCodigoSeguranca(cvvInput.getText());                           
+        dadosCartao.setValidadeMes(monthInput.getText());                         
+        dadosCartao.setValidadeAno(yearInput.getText());
+        if (!edit) {
+            dadosCartaoDao.save(dadosCartao);
+        }
+        else {
+            dadosCartaoDao.update(dadosCartao);
+        }
+        this.dispose();
+    }//GEN-LAST:event_btnSaveActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new CartaoFrame().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bg;
+    private javax.swing.JButton btnSave;
     private javax.swing.JTextField cardNumberInput;
     private javax.swing.JTextField cvvInput;
     private javax.swing.JTextField holderInput;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JTextField monthInput;

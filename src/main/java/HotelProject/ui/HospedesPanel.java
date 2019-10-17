@@ -150,19 +150,18 @@ public class HospedesPanel extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(dataNascimentoInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(emailInput)
-                    .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(cadastroPanelLayout.createSequentialGroup()
-                            .addComponent(documentoInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(tipoDocInput, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(cadastroPanelLayout.createSequentialGroup()
-                            .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(cadastroPanelLayout.createSequentialGroup()
-                                    .addComponent(nomeInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(telefoneInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(cadastroPanelLayout.createSequentialGroup()
+                        .addComponent(documentoInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tipoDocInput, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(cadastroPanelLayout.createSequentialGroup()
+                        .addGroup(cadastroPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(cadastroPanelLayout.createSequentialGroup()
+                                .addComponent(nomeInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(telefoneInput, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         cadastroPanelLayout.setVerticalGroup(
@@ -258,6 +257,11 @@ public class HospedesPanel extends javax.swing.JPanel {
         btnBankCard.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/bank-card.png"))); // NOI18N
         btnBankCard.setBorder(null);
         btnBankCard.setMargin(new java.awt.Insets(2, 2, 2, 2));
+        btnBankCard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBankCardActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout listagemPanelLayout = new javax.swing.GroupLayout(listagemPanel);
         listagemPanel.setLayout(listagemPanelLayout);
@@ -352,56 +356,70 @@ public class HospedesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnNovoFuncionarioActionPerformed
 
     private void btnDelFuncionarioMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDelFuncionarioMouseClicked
+        int i = tableEmployee.getSelectedRow();
+        if (i == -1) {
+            JOptionPane.showMessageDialog(null, "Selecione na tabela", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
         DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
 
-        int i = tableEmployee.getSelectedRow();
-        if (i >= 0) {
-            Integer id = Integer.parseInt(dataModel.getValueAt(i, 0).toString());
-            Hospede hospede = hospedeDao.find(id);
+        Integer id = Integer.parseInt(dataModel.getValueAt(i, 0).toString());
+        Hospede hospede = hospedeDao.find(id);
 
-            int input = JOptionPane.showConfirmDialog(null, "Remover "+ hospede.getNome()+ "?", "Remover funcionário",
-                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        int result = JOptionPane.showConfirmDialog(null, "Remover "+ hospede.getNome()+ "?", "Remover funcionário",
+            JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-            if (input == JOptionPane.YES_OPTION) {
-                hospedeDao.delete(hospede);
-                dataModel.removeRow(i);
-            }
-        }
-        else {
-            JOptionPane.showMessageDialog(null, "Selecione na tabela", "Info", JOptionPane.INFORMATION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            hospedeDao.delete(hospede);
+            dataModel.removeRow(i);
         }
     }//GEN-LAST:event_btnDelFuncionarioMouseClicked
 
     private void btnEditFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditFuncionarioActionPerformed
+        editIndex = tableEmployee.getSelectedRow();
+        if (editIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Selecione na tabela", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
         DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
 
         editIndex = tableEmployee.getSelectedRow();
-        if (editIndex >= 0) {
-            Integer id = Integer.parseInt(dataModel.getValueAt(editIndex, 0).toString());
-            hospede = hospedeDao.find(id);
+        Integer id = Integer.parseInt(dataModel.getValueAt(editIndex, 0).toString());
+        hospede = hospedeDao.find(id);
 
-            nomeInput.setText(hospede.getNome());
-            telefoneInput.setText(hospede.getTelefone());
-            enderecoInput.setText(hospede.getEndereco());
-            cidadeInput.setText(hospede.getCidade());
-            estadoInput.setText(hospede.getEstado());
-            paisInput.setText(hospede.getPais());
-            dataNascimentoInput.setText(formatDate(hospede.getDataNascimento()));
-            emailInput.setText(hospede.getEmail());
-            documentoInput.setText(hospede.getDocumento());
-            tipoDocInput.setSelectedItem(TipoDocumento.values()[hospede.getTipoDoc()]);
+        nomeInput.setText(hospede.getNome());
+        telefoneInput.setText(hospede.getTelefone());
+        enderecoInput.setText(hospede.getEndereco());
+        cidadeInput.setText(hospede.getCidade());
+        estadoInput.setText(hospede.getEstado());
+        paisInput.setText(hospede.getPais());
+        dataNascimentoInput.setText(formatDate(hospede.getDataNascimento()));
+        emailInput.setText(hospede.getEmail());
+        documentoInput.setText(hospede.getDocumento());
+        tipoDocInput.setSelectedItem(TipoDocumento.values()[hospede.getTipoDoc()]);
 
-            cadastroPanel.setVisible(true);
-            listagemPanel.setVisible(false);
-        }
-        else {
-            JOptionPane.showMessageDialog(null, "Selecione na tabela", "Info", JOptionPane.INFORMATION_MESSAGE);
-        }
+        cadastroPanel.setVisible(true);
+        listagemPanel.setVisible(false);
     }//GEN-LAST:event_btnEditFuncionarioActionPerformed
 
     private void listagemPanelAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_listagemPanelAncestorAdded
         fillEmployeeTable();
     }//GEN-LAST:event_listagemPanelAncestorAdded
+
+    private void btnBankCardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBankCardActionPerformed
+        editIndex = tableEmployee.getSelectedRow();
+        if (editIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Selecione na tabela", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        
+        DefaultTableModel dataModel = (DefaultTableModel) tableEmployee.getModel();
+        Integer idHospede = Integer.parseInt(dataModel.getValueAt(editIndex, 0).toString());
+
+        new CartaoFrame(idHospede).setVisible(true);
+    }//GEN-LAST:event_btnBankCardActionPerformed
     
     private void resetForm() {
         nomeInput.setText("");
