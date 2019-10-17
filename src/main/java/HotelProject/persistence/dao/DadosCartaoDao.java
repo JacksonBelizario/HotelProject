@@ -43,7 +43,7 @@ public class DadosCartaoDao extends Dao implements AbstractDao<DadosCartao> {
         List<DadosCartao> query = entityManager.createQuery("SELECT t FROM DadosCartao t where t.codigo_hospede = :codigo_hospede")
                         .setParameter("codigo_hospede", idHospede).getResultList();
         
-        if (query.size() > 1) {
+        if (query.size() > 0) {
             return query.get(0);
         }
         return null;
